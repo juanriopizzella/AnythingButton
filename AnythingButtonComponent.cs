@@ -54,7 +54,7 @@ namespace AnythingButton
             const string url = "https://httpbin.org/put"; // Replace with your real URL
             var jsonContent = new StringContent($"{{\"prompt\":\"{prompt}\"}}", Encoding.UTF8, "application/json");
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1)); // 1 minute timeout
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // 1 minute timeout
 
             try
             {
