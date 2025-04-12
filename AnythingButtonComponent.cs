@@ -33,6 +33,35 @@ namespace AnythingButton
             pManager.AddTextParameter("Response", "R", "Server response or status", GH_ParamAccess.item);
         }
 
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+
+            string preprompt = "create a grasshopper component in csharp inherit GH_Component to ";
+            string prompt = string.Empty;
+            bool trigger = false;
+
+            if (!DA.GetData(0, ref prompt)) return;
+            if (!DA.GetData(1, ref trigger)) return;
+
+            if (trigger)
+            {
+                // Run the async task on a background thread
+                Task.Run(async () =>
+                {
+                    string result = await SendPostRequestAsync(preprompt + prompt);
+
+                    RunGitPull("%USERPROFILE%\\Desktop\\Code\\AnythingButton_Results");
+                    // Safely update the output on the main thread
+                    Rhino.RhinoApp.InvokeOnUiThread(() =>
+                    {
+                        DA.SetData(0, result);
+                    });
+                });
+
+                // Reset the trigger to prevent repeated execution
+                //trigger = false;
+            }
+        }
 
         private static async Task<string> SendPostRequestAsync(string prompt)
         {
@@ -93,31 +122,6 @@ namespace AnythingButton
         public override Guid ComponentGuid => new Guid("61bfd719-e7a0-4bbf-a02c-9c2bc7ac60cc");
 
 
-        protected override void SolveInstance(IGH_DataAccess DA)
-        {
-            string prompt = string.Empty;
-            bool trigger = false;
 
-            if (!DA.GetData(0, ref prompt)) return;
-            if (!DA.GetData(1, ref trigger)) return;
-
-            if (trigger)
-            {
-                // Run the async task on a background thread
-                Task.Run(async () =>
-                {
-                    string result = await SendPostRequestAsync(prompt);
-                    RunGitPull("%USERPROFILE%\\Desktop\\Code\\AnythingButton_Results");
-                    // Safely update the output on the main thread
-                    Rhino.RhinoApp.InvokeOnUiThread(() =>
-                    {
-                        DA.SetData(0, result);
-                    });
-                });
-
-                // Reset the trigger to prevent repeated execution
-                //trigger = false;
-            }
-        }
     }
 }
