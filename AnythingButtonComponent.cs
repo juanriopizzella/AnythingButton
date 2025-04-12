@@ -30,7 +30,7 @@ namespace AnythingButton
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            pManager.AddTextParameter("Response", "R", "Server response or status", GH_ParamAccess.item);
+            pManager.AddTextParameter("Response", "Result", "Server response or status", GH_ParamAccess.item);
         }
 
 
@@ -39,7 +39,7 @@ namespace AnythingButton
             const string url = "https://ai.aria.run/prompt"; // Replace with your real URL
             var jsonContent = new StringContent($"{{\"prompt\":\"{prompt}\"}}", Encoding.UTF8, "application/json");
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // 1 minute timeout
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2)); // 1 minute timeout
 
             try
             {
