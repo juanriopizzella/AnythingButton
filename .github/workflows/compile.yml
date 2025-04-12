@@ -27,3 +27,12 @@ jobs:
 
       - name: Run tests (optional)
         run: dotnet test --no-build --verbosity normal
+
+      - name: Publish application
+        run: dotnet publish -c Release -o out
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: compiled-app
+          path: out/
