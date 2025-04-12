@@ -21,7 +21,7 @@ namespace AnythingButton
         /// </summary>
         private static readonly HttpClient client = new HttpClient();
         public AnythingButtonComponent()
-          : base("AnythingButtonComponent", "AnythingButtonComponent",
+          : base("AnythingButton", "Your dream tool!",
             "Description",
             "AnythingButton", "AnythingButton")
         {
@@ -32,8 +32,8 @@ namespace AnythingButton
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            pManager.AddTextParameter("Prompt", "P", "Prompt text to send", GH_ParamAccess.item);
-            pManager.AddBooleanParameter("Trigger", "T", "Send request if true", GH_ParamAccess.item);
+            pManager.AddTextParameter("Prompt", "Prompt", "GH component you're dreaming about!", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Run", "Run", "Run if ture, use Boolean toggle for this.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -103,6 +103,7 @@ namespace AnythingButton
                 var task = SendPutRequestAsync(prompt);
                 task.Wait(); // Blocking: not ideal, but simple
                 DA.SetData(0, task.Result);
+                trigger = false;
             }
         }
     }
