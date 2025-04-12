@@ -16,9 +16,9 @@ namespace AnythingButton
         /// new tabs/panels will automatically be created.
         /// </summary>
         public AnythingButtonComponent()
-          : base("AnythingButtonComponent", "Nickname",
+          : base("AnythingButtonComponent", "AnythingButtonComponent",
             "Description",
-            "Category", "Subcategory")
+            "AnythingButton", "AnythingButton")
         {
         }
 
