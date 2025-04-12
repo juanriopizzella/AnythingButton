@@ -2,6 +2,9 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace AnythingButton
@@ -15,6 +18,7 @@ namespace AnythingButton
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
+        private static readonly HttpClient client = new HttpClient();
         public AnythingButtonComponent()
           : base("AnythingButtonComponent", "AnythingButtonComponent",
             "Description",
@@ -25,15 +29,18 @@ namespace AnythingButton
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
+            pManager.AddTextParameter("Prompt", "P", "Prompt text to send", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("Trigger", "T", "Send request if true", GH_ParamAccess.item);
         }
 
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
+            pManager.AddTextParameter("Response", "R", "Server response or status", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -41,8 +48,22 @@ namespace AnythingButton
         /// </summary>
         /// <param name="DA">The DA object can be used to retrieve data from input parameters and 
         /// to store data in output parameters.</param>
-        protected override void SolveInstance(IGH_DataAccess DA)
+        private static async Task<string> SendPutRequestAsync(string prompt)
         {
+            const string url = "https://example.com/your-endpoint"; // Replace with your real URL
+            var jsonContent = new StringContent($"{{\"prompt\":\"{prompt}\"}}", Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await client.PutAsync(url, jsonContent);
+                return response.IsSuccessStatusCode
+                    ? await response.Content.ReadAsStringAsync()
+                    : $"HTTP Error: {response.StatusCode}";
+            }
+            catch (Exception ex)
+            {
+                return $"Exception: {ex.Message}";
+            }
         }
 
         /// <summary>
@@ -58,6 +79,32 @@ namespace AnythingButton
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
+        
+
         public override Guid ComponentGuid => new Guid("61bfd719-e7a0-4bbf-a02c-9c2bc7ac60cc");
+
+
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+            string prompt = string.Empty;
+            bool trigger = false;
+
+            if (!DA.GetData(0, ref prompt)) return;
+            if (!DA.GetData(1, ref trigger)) return;
+
+            if (trigger)
+            {
+                var task = SendPutRequestAsync(prompt);
+                task.Wait(); // Blocking: not ideal, but simple
+                DA.SetData(0, task.Result);
+            }
+            else
+            {
+                DA.SetData(0, "Trigger is false. No request sent.");
+            }
+        }
+
+        
+
     }
 }
