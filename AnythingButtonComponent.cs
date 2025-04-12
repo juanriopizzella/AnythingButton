@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using System.Diagnostics;
 
 namespace AnythingButton
 {
@@ -59,6 +60,32 @@ namespace AnythingButton
             }
         }
 
+        public void RunGitPull(string repoPath)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "git",
+                Arguments = "pull",
+                WorkingDirectory = repoPath,  // path to your local repo
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(psi))
+            {
+                string output = process.StandardOutput.ReadToEnd();
+                string errors = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                // Optionally log output/errors
+                Rhino.RhinoApp.WriteLine("Git Pull Output:\n" + output);
+                if (!string.IsNullOrWhiteSpace(errors))
+                    Rhino.RhinoApp.WriteLine("Git Pull Errors:\n" + errors);
+            }
+        }
+
 
         protected override System.Drawing.Bitmap Icon => null;
 
@@ -80,7 +107,7 @@ namespace AnythingButton
                 Task.Run(async () =>
                 {
                     string result = await SendPostRequestAsync(prompt);
-
+                    RunGitPull("");
                     // Safely update the output on the main thread
                     Rhino.RhinoApp.InvokeOnUiThread(() =>
                     {
