@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AnythingButton
 {
@@ -50,15 +51,21 @@ namespace AnythingButton
         /// to store data in output parameters.</param>
         private static async Task<string> SendPutRequestAsync(string prompt)
         {
-            const string url = "https://example.com/your-endpoint"; // Replace with your real URL
+            const string url = "https://httpbin.org/put"; // Replace with your real URL
             var jsonContent = new StringContent($"{{\"prompt\":\"{prompt}\"}}", Encoding.UTF8, "application/json");
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1)); // 1 minute timeout
 
             try
             {
-                var response = await client.PutAsync(url, jsonContent);
+                var response = await client.PutAsync(url, jsonContent, cts.Token);
                 return response.IsSuccessStatusCode
                     ? await response.Content.ReadAsStringAsync()
                     : $"HTTP Error: {response.StatusCode}";
+            }
+            catch (TaskCanceledException)
+            {
+                return "Request timed out after 1 minute.";
             }
             catch (Exception ex)
             {
@@ -79,7 +86,6 @@ namespace AnythingButton
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
-        
 
         public override Guid ComponentGuid => new Guid("61bfd719-e7a0-4bbf-a02c-9c2bc7ac60cc");
 
@@ -98,13 +104,6 @@ namespace AnythingButton
                 task.Wait(); // Blocking: not ideal, but simple
                 DA.SetData(0, task.Result);
             }
-            else
-            {
-                DA.SetData(0, "Trigger is false. No request sent.");
-            }
         }
-
-        
-
     }
 }
