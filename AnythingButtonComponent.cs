@@ -100,9 +100,19 @@ namespace AnythingButton
 
             if (trigger)
             {
-                var task = SendPutRequestAsync(prompt);
-                task.Wait(); // Blocking: not ideal, but simple
-                DA.SetData(0, task.Result);
+                // Run the async task on a background thread
+                Task.Run(async () =>
+                {
+                    string result = await SendPutRequestAsync(prompt);
+
+                    // Safely update the output on the main thread
+                    Rhino.RhinoApp.InvokeOnUiThread(() =>
+                    {
+                        DA.SetData(0, result);
+                    });
+                });
+
+                // Reset the trigger to prevent repeated execution
                 trigger = false;
             }
         }
