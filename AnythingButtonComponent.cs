@@ -107,7 +107,7 @@ namespace AnythingButton
                 Task.Run(async () =>
                 {
                     string result = await SendPostRequestAsync(prompt);
-                    RunGitPull("");
+                    RunGitPull("%USERPROFILE%\\Desktop\\Code\\AnythingButton_Results");
                     // Safely update the output on the main thread
                     Rhino.RhinoApp.InvokeOnUiThread(() =>
                     {
