@@ -4,3 +4,14 @@ Exploring the future of [AI Factories](https://aria.run/index_en.html) for AEC
 
 * [Server](https://github.com/rvba/AnythingButton_Server)
 * [Results](https://github.com/juanriopizzella/AnythingButton_Results)
+
+## Team
+
+* [Milovann Yanatchkov](https://www.linkedin.com/in/milovann-yanatchkov/)
+* [Gareth Volka](https://www.linkedin.com/in/gareth-volka/)
+* [Ahmed Hassan](https://www.linkedin.com/in/ahmedosama4860/)
+* [Juan Rio Pizzella](https://www.linkedin.com/in/juanriopizzella/)
+* [Nuraddin Kazimov](https://www.linkedin.com/in/nkazimov)
+* [Pintian Liu](https://www.linkedin.com/in/pin-t-liu/)
+
+
