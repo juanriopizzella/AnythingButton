@@ -63,6 +63,16 @@ namespace AnythingButton.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconCanvasCleanPlus {
+            get {
+                object obj = ResourceManager.GetObject("IconCanvasCleanPlus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconCanvasCustom {
             get {
                 object obj = ResourceManager.GetObject("IconCanvasCustom", resourceCulture);
