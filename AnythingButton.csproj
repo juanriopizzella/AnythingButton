@@ -62,8 +62,4 @@
     <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(TargetDir)$(TargetName).gha.pdb" Condition="$([MSBuild]::IsOSPlatform(OSX)) and $(TargetFramework.StartsWith('net4')) and Exists('$(TargetDir)$(TargetName).pdb')" />
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="S" />
-  </Target>
-
 </Project>
