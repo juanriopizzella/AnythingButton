@@ -4,7 +4,7 @@
 
 **[AECTech+ London](https://www.aectech.us/london-hackathon)** April 12-13 2025
 
-### Exploring the future of [AI Factories](https://aria.run/index_en.html) for AEC
+### Exploring the future of [AI Factories](https://aria.run/index.html) for AEC
 
 ![](anythingbutton.jpg)
 
