@@ -38,7 +38,8 @@ namespace AnythingButton
         protected override void SolveInstance(IGH_DataAccess DA)
         {
 
-            string preprompt = "create a grasshopper component in csharp inherit GH_Component, with category as \"AnythingButton\" and subcategory as \"AnythingButton\". The component ";
+            string pre_prompt = "create a grasshopper component in csharp inherit GH_Component, with category as \"AnythingButton\" and subcategory as \"AnythingButton\". The component ";
+            string post_prompt = ". set protected override Bitmap Icon => to the bitmap of a generated base64 24x24 icon";
             string prompt = string.Empty;
             bool trigger = false;
 
@@ -50,7 +51,7 @@ namespace AnythingButton
                 // Run the async task on a background thread
                 Task.Run(async () =>
                 {
-                    string result = await SendPostRequestAsync(preprompt + prompt);
+                    string result = await SendPostRequestAsync(pre_prompt + prompt + post_prompt);
 
                     RunGitPull("%USERPROFILE%\\Desktop\\Code\\AnythingButton_Results");
                     // Safely update the output on the main thread
