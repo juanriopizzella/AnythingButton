@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
+using AnythingButton.Properties;
+using System.Drawing;
 
 namespace AnythingButton
 {
@@ -36,7 +38,7 @@ namespace AnythingButton
         protected override void SolveInstance(IGH_DataAccess DA)
         {
 
-            string preprompt = "create a grasshopper component in csharp inherit GH_Component to ";
+            string preprompt = "create a grasshopper component in csharp inherit GH_Component, with category as \"AnythingButton\" and subcategory as \"AnythingButton\". The component ";
             string prompt = string.Empty;
             bool trigger = false;
 
@@ -65,10 +67,10 @@ namespace AnythingButton
 
         private static async Task<string> SendPostRequestAsync(string prompt)
         {
-            const string url = "https://ai.aria.run/prompt"; // Replace with your real URL
+            const string url = "https://ai.aria.run/prompt";
             var jsonContent = new StringContent($"{{\"prompt\":\"{prompt}\"}}", Encoding.UTF8, "application/json");
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2)); // 1 minute timeout
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
 
             try
             {
@@ -95,7 +97,7 @@ namespace AnythingButton
             {
                 FileName = "git",
                 Arguments = "pull",
-                WorkingDirectory = repoPath,  // path to your local repo
+                WorkingDirectory = repoPath,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -108,20 +110,14 @@ namespace AnythingButton
                 string errors = process.StandardError.ReadToEnd();
                 process.WaitForExit();
 
-                // Optionally log output/errors
                 Rhino.RhinoApp.WriteLine("Git Pull Output:\n" + output);
                 if (!string.IsNullOrWhiteSpace(errors))
                     Rhino.RhinoApp.WriteLine("Git Pull Errors:\n" + errors);
             }
         }
 
-
-        protected override System.Drawing.Bitmap Icon => null;
-
+        protected override Bitmap Icon => UtilityIcon.ResizeIcon(Resources.IconCanvasCustom);
 
         public override Guid ComponentGuid => new Guid("61bfd719-e7a0-4bbf-a02c-9c2bc7ac60cc");
-
-
-
     }
 }
