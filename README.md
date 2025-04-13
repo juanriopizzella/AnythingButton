@@ -11,7 +11,7 @@
 **AnythingButton** is an application that takes user prompts and turns them into
 functional C# plugins for Grasshopper using an LLM agent.
 
-
+![](workflow.jpg)
 
 ## Code
 
