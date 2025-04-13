@@ -51,7 +51,7 @@ namespace AnythingButton
                 // Run the async task on a background thread
                 Task.Run(async () =>
                 {
-                    string result = await SendPostRequestAsync(pre_prompt + prompt + post_prompt);
+                    string result = await SendPostRequestAsync(pre_prompt + prompt);
 
                     RunGitPull("%USERPROFILE%\\Desktop\\Code\\AnythingButton_Results");
                     // Safely update the output on the main thread
