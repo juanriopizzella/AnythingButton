@@ -23,13 +23,13 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release -f net7.0-windows
+        run: dotnet build --no-restore --configuration Release
 
       - name: Run tests (optional)
         run: dotnet test --no-build --verbosity normal
 
       - name: Publish application
-        run: dotnet publish -c Release -o out
+        run: dotnet publish -c Release -f net7.0-windows -o out
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
