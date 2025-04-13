@@ -1,6 +1,12 @@
 # AnythingButton
 
-Exploring the future of [AI Factories](https://aria.run/index_en.html) for AEC
+## AEC Hackathon London
+
+**[AECTech+ London](https://www.aectech.us/london-hackathon)** April 12-13 2025
+
+### Exploring the future of [AI Factories](https://aria.run/index_en.html) for AEC
+
+## Code
 
 * [Server](https://github.com/rvba/AnythingButton_Server)
 * [Results](https://github.com/juanriopizzella/AnythingButton_Results)
