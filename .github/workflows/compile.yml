@@ -22,8 +22,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build plugin
-        run: dotnet publish AnythingButton/AnythingButton.csproj -c Release -f net7.0-windows
+      - name: Build
+        run: dotnet build --no-restore --configuration Release -f net7.0-windows
 
       - name: Run tests (optional)
         run: dotnet test --no-build --verbosity normal
