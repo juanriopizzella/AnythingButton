@@ -17,13 +17,13 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'  # or '7.0.x', etc., based on your project
+          dotnet-version: '7.0.x'
 
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release -f net7.0-windows
 
       - name: Run tests (optional)
         run: dotnet test --no-build --verbosity normal
