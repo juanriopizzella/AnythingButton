@@ -23,10 +23,14 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <Compile Remove="Nodes\CreateCode\MyRuntimeComponent.cs" />
+    <Compile Remove="Nodes\CreateCode\SpawnerComponent.cs" />
     <Compile Remove="Nodes\Fetch.cs" />
   </ItemGroup>
   
   <ItemGroup>
+    <None Include="Nodes\CreateCode\MyRuntimeComponent.cs" />
+    <None Include="Nodes\CreateCode\SpawnerComponent.cs" />
     <None Include="Nodes\Fetch.cs" />
   </ItemGroup>
   
@@ -68,6 +72,10 @@
   <Target Name="CopyPdbForMonoDebugging" AfterTargets="AfterBuild">
     <!-- Enable debugging in Rhino 6/7 on Mac -->
     <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(TargetDir)$(TargetName).gha.pdb" Condition="$([MSBuild]::IsOSPlatform(OSX)) and $(TargetFramework.StartsWith('net4')) and Exists('$(TargetDir)$(TargetName).pdb')" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="Copy &quot;$(TargetPath)&quot; &quot;%25USERPROFILE%25\AppData\Roaming\Grasshopper\Libraries\&quot;&#xD;&#xA;Erase &quot;$(TargetPath)&quot;" />
   </Target>
 
 </Project>

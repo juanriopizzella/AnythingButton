@@ -1,55 +1,71 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.IO.Compression;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Grasshopper.Kernel;
+using Newtonsoft.Json.Linq;
 
-namespace AnythingButton.Nodes
+public class Fetch : GH_Component
 {
-    using System;
-    using System.IO;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.IO.Compression;
-    using System.Threading.Tasks;
-    using Newtonsoft.Json.Linq;
+    public Fetch() : base("Fetch", "Fetch", "Downloads latest .gha from GitHub", "AnythingButton", "Fetch") { }
 
-    private async Task<string> DownloadGhaFromGitHub()
+    public override Guid ComponentGuid => new Guid("d9eabca5-5a5c-4b23-90d4-e3bd4c6447af");
+
+    protected override void RegisterInputParams(GH_InputParamManager pManager)
+    {
+        pManager.AddBooleanParameter("Update Now", "Run", "Run the update check", GH_ParamAccess.item);
+    }
+
+    protected override void RegisterOutputParams(GH_OutputParamManager pManager)
+    {
+        pManager.AddTextParameter("Result", "R", "Result of update process", GH_ParamAccess.item);
+    }
+
+    protected override void SolveInstance(IGH_DataAccess DA)
+    {
+        bool run = false;
+        DA.GetData(0, ref run);
+
+        if (!run)
+        {
+            DA.SetData(0, "Waiting...");
+            return;
+        }
+
+        string result = DownloadAndInstall().GetAwaiter().GetResult();
+        DA.SetData(0, result);
+    }
+
+    private async Task<string> DownloadAndInstall()
     {
         string owner = "YOUR_GITHUB_USERNAME";
         string repo = "YOUR_REPO_NAME";
-        string token = ""; // If private repo: "ghp_XXXX"
         string artifactName = "AnythingButtonPlugin";
-        string ghaInstallPath = @"C:\Users\GarethVolka\AppData\Roaming\Grasshopper\Libraries\AnythingButton.gha";
+        string installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Grasshopper\Libraries\AnythingButton.gha");
 
         using (HttpClient client = new HttpClient())
         {
-            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("GHPluginFetcher", "1.0"));
-            if (!string.IsNullOrWhiteSpace(token))
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", token);
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("GHPluginUpdater", "1.0"));
+            // Optional: If private repo, use token
+            // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("token", "ghp_XXXX");
 
-            // Get the latest workflow run
-            var runUrl = $"https://api.github.com/repos/{owner}/{repo}/actions/runs?per_page=1&status=completed";
-            var runResp = await client.GetStringAsync(runUrl);
-            var runs = JObject.Parse(runResp)["workflow_runs"];
-            if (runs == null || runs.Count() == 0) return "No workflow runs found.";
+            string runUrl = $"https://api.github.com/repos/{owner}/{repo}/actions/runs?per_page=1&status=completed";
+            var runJson = await client.GetStringAsync(runUrl);
+            var runs = JObject.Parse(runJson)["workflow_runs"];
+            if (runs == null || !runs.Any()) return "No workflow runs found.";
 
-            var latestRun = runs[0];
-            if ((string)latestRun["conclusion"] != "success")
-                return "Latest build did not succeed.";
+            var latest = runs[0];
+            if ((string)latest["conclusion"] != "success") return "Last build was not successful.";
 
-            string runId = latestRun["id"].ToString();
+            string runId = (string)latest["id"];
+            string artifactUrl = $"https://api.github.com/repos/{owner}/{repo}/actions/runs/{runId}/artifacts";
+            var artifactsJson = await client.GetStringAsync(artifactUrl);
+            var artifacts = JObject.Parse(artifactsJson)["artifacts"];
 
-            // Get artifacts
-            var artifactUrl = $"https://api.github.com/repos/{owner}/{repo}/actions/runs/{runId}/artifacts";
-            var artifactResp = await client.GetStringAsync(artifactUrl);
-            var artifacts = JObject.Parse(artifactResp)["artifacts"];
-
-            if (artifacts == null || artifacts.Count() == 0)
-                return "No artifacts found.";
+            if (artifacts == null) return "No artifacts found.";
 
             string downloadUrl = null;
-
             foreach (var artifact in artifacts)
             {
                 if ((string)artifact["name"] == artifactName)
@@ -59,40 +75,25 @@ namespace AnythingButton.Nodes
                 }
             }
 
-            if (downloadUrl == null)
-                return $"Artifact '{artifactName}' not found.";
+            if (downloadUrl == null) return "Artifact not found.";
 
-            var artifactZip = await client.GetByteArrayAsync(downloadUrl);
-            string tempZipPath = Path.GetTempFileName();
-            File.WriteAllBytes(tempZipPath, artifactZip);
+            var zipBytes = await client.GetByteArrayAsync(downloadUrl);
+            string tempZip = Path.GetTempFileName();
+            File.WriteAllBytes(tempZip, zipBytes);
 
-            using (var archive = ZipFile.OpenRead(tempZipPath))
+            using (var zip = ZipFile.OpenRead(tempZip))
             {
-                foreach (var entry in archive.Entries)
+                foreach (var entry in zip.Entries)
                 {
                     if (entry.FullName.EndsWith(".gha"))
                     {
-                        entry.ExtractToFile(ghaInstallPath, true);
-                        return "✅ Plugin downloaded successfully!";
+                        entry.ExtractToFile(installPath, true);
+                        return $"✅ Downloaded to {installPath}";
                     }
                 }
             }
 
-            return "Artifact downloaded, but no .gha file found.";
+            return "No .gha file in artifact.";
         }
-    }
-
-    // Main script entry point
-    private void RunScript(bool RunDownload, ref object Result)
-    {
-        if (!RunDownload)
-        {
-            Result = "Waiting...";
-            return;
-        }
-
-        var task = DownloadGhaFromGitHub();
-        task.Wait();
-        Result = task.Result;
     }
 }
