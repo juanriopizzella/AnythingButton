@@ -1,8 +1,8 @@
 # AnythingButton
 
-## AECTech Hackathon London
+## AEC|Tech Hackathon London
 
-**[AECTech London](https://www.aectech.us/london-hackathon)** April 12-13 2025 | 🏆 Most Impactful Hack Award !
+**[AEC|Tech London](https://www.aectech.us/london-hackathon)** April 12-13 2025 | 🏆 Most Impactful Hack Award !
 
 ### Exploring the future of [AI Factories](https://aria.run/index.html) for AEC
 
