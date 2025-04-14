@@ -24,7 +24,7 @@ functional C# plugins for Grasshopper using an LLM agent.
 
 ## Code
 
-* [Client]((https://github.com/juanriopizzella/AnythingButton/tree/main/Grasshopper) : [Grasshopper](https://github.com/juanriopizzella/AnythingButton/tree/main/Grasshopper)
+* [Client](https://github.com/juanriopizzella/AnythingButton/tree/main/Grasshopper) : [Grasshopper](https://github.com/juanriopizzella/AnythingButton/tree/main/Grasshopper)
 * [Server](https://github.com/rvba/AnythingButton_Server) : [Aider](https://aider.chat)
 * [Results](https://github.com/juanriopizzella/AnythingButton_Results) : [GitHub Actions](https://github.com/juanriopizzella/AnythingButton_Results/actions)
 
