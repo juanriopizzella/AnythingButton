@@ -6,12 +6,12 @@
 
 ### Exploring the future of [AI Factories](https://aria.run/index.html) for AEC
 
-![](anythingbutton.jpg)
+![](Presentation/anythingbutton.jpg)
 
 **AnythingButton** is an application that takes user prompts and turns them into
 functional C# plugins for Grasshopper using an LLM agent.
 
-![](workflow.jpg)
+![](Presentation/workflow.jpg)
 
 ## Code
 
