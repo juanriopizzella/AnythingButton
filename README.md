@@ -8,7 +8,7 @@
 
 ![](Presentation/anythingbutton.jpg)
 
-![](Presentation/Final GIF Low.gif)
+![](Presentation/Final-GIF-Low.gif)
 
 **AnythingButton** is an application that takes user prompts and turns them into
 functional C# plugins for Grasshopper using an LLM agent.
